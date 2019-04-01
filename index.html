@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test page for summernote combined with pdfmake html-to-pdf</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/summernote.css" rel="stylesheet">
+    <style>
+        iframe {
+            width: 100%;
+            height: 40vh;
+        }
+    </style>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="js/summernote.min.js"></script>
+    <script src="js/pdfmake.min.js"></script>
+    <script src="js/vfs_fonts.js"></script>
+    <script src="js/html-to-pdf.js"></script>
+</head>
+<body>
+<button onclick="generatePdf()">Generate PDF</button>
+<div class="summernote"></div>
+<div class="preview">
+    <iframe src="" id="target-url"></iframe>
+</div>
+<script>
+    $('.summernote').summernote({
+        height: 200,
+        toolbar: [
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['style', ['clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['style', ['style', 'bold', 'italic', 'underline']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['color', ['color']],
+            ['height', ['height']],
+            ['insert', ['link', 'hr']],
+            ['view', ['fullscreen', 'codeview', 'undo', 'redo']],
+            ['help', ['help']]
+        ]
+    });
+
+    $('.summernote').summernote('code', '<h1><b>Header 1</b></h1><h2><b>Header 2</b></h2><h3><b>header 3</b></h3><ul><li>List</li><li>With <b>Bold Item</b></li><li><b><u>With Bold Underlined Item</u></b></li></ul><p>Some more Text, with some <i>italic</i></p><ol><li><i>Numbered list</i></li><li>Allowing different</li></ol>');
+
+    function generateToIframe() {
+        var pdfDocGenerator = pdfMake.createPdf(window.docDefinition);
+        pdfDocGenerator.getDataUrl((dataUrl) => {
+            $("#target-url").attr({
+                src: dataUrl
+            });
+        });
+    }
+
+    function generateDefinition() {
+        const dpi = 50;
+        window.docDefinition = {
+            pageSize: {width: 8.5 * dpi, height: 11 * dpi},
+            pageMargins: [0.2 * dpi, 2.325 * dpi, 0.2 * dpi, 0.3 * dpi], //[l, t, r, b]
+            content: htmlToPdfService.convertHtml($('.summernote').summernote('code'))
+        };
+    }
+
+    function generatePdf() {
+        generateDefinition();
+        generateToIframe();
+    }
+
+</script>
+</body>
+</html>
