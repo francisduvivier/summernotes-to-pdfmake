@@ -1,4 +1,3 @@
-
 /**
  * Shape of line number objects
  */
@@ -93,7 +92,8 @@ class HtmlToPdfService {
     /**
      * Constructor
      */
-    public constructor() {}
+    public constructor() {
+    }
 
     /**
      * Determine the ideal top margin for a given node
@@ -296,7 +296,7 @@ class HtmlToPdfService {
                         newParagraph = {
                             columns: [
                                 // the line number column
-                                this.getLineNumberObject({ lineNumber: +currentLineNumber }),
+                                this.getLineNumberObject({lineNumber: +currentLineNumber}),
                                 {
                                     text: []
                                 }
@@ -503,13 +503,13 @@ class HtmlToPdfService {
         let foundLineNumbers = [];
         const lineNumber = this.getLineNumber(element);
         if (lineNumber) {
-            foundLineNumbers.push({ lineNumber: lineNumber });
+            foundLineNumbers.push({lineNumber: lineNumber});
         } else if (element.nodeName === 'BR') {
             // Check if there is a new line, but it does not get a line number.
             // If so, insert a dummy line, so the line numbers stays aligned with
             // the text.
             if (!this.getLineNumber(element.nextSibling as Element)) {
-                foundLineNumbers.push({ lineNumber: '' });
+                foundLineNumbers.push({lineNumber: ''});
             }
         } else {
             const children = Array.from(element.childNodes) as Element[];
@@ -609,11 +609,11 @@ class HtmlToPdfService {
                 if (styleDefinition.length === 2) {
                     switch (key) {
                         case 'padding-left': {
-                            styleObject.margin = [+value, 0, 0, 0];
+                            styleObject.margin = [parseFloat(value), 0, 0, 0];
                             break;
                         }
                         case 'font-size': {
-                            styleObject.fontSize = +value;
+                            styleObject.fontSize = parseFloat(value);
                             break;
                         }
                         case 'text-align': {
@@ -724,4 +724,5 @@ class HtmlToPdfService {
         return container;
     }
 }
+
 const htmlToPdfService = new HtmlToPdfService();
